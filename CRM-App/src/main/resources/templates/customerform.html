@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add Customer</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap"
+          rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(to right, #141e30, #243b55);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px 15px; /* Mobile edges se text chipke na isliye padding adjust ki */
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 650px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-container h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+
+        /* ================= FORM MANAGEMENT ================= */
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form label {
+            display: block;
+            color: white;
+            margin-top: 18px;
+            margin-bottom: 8px;
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        form label:first-of-type {
+            margin-top: 0;
+        }
+
+        /* Required fields ke liye red asterisk (*) */
+        .required-label::after {
+            content: " *";
+            color: #ff4d4d;
+            font-weight: bold;
+        }
+
+        /* Inputs aur Textarea styling */
+        form input[type="text"],
+        form input[type="email"],
+        form input[type="number"],
+        form textarea {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            outline: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 15px;
+            transition: 0.3s;
+            display: block;
+        }
+
+        form textarea {
+            resize: none;
+            height: 100px;
+        }
+
+        form input::placeholder,
+        form textarea::placeholder {
+            color: #ddd;
+        }
+
+        form input:focus,
+        form textarea:focus {
+            background: rgba(255, 255, 255, 0.22);
+            box-shadow: 0 0 10px rgba(41, 121, 255, 0.5);
+        }
+
+        /* Buttons Group Styling */
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 35px;
+        }
+
+        .save-btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            background: #00c853;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .save-btn:hover {
+            background: #00a844;
+            transform: scale(1.05);
+        }
+
+        .back-btn {
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            background: #2979ff;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            display: inline-block;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #1565c0;
+            transform: scale(1.05);
+        }
+
+        /* ================= MEDIA QUERIES FOR MOBILE & TABLET ================= */
+        @media (max-width: 576px) {
+            body {
+                padding: 15px 10px;
+            }
+
+            .form-container {
+                padding: 25px 20px; /* Chhoti screen par form ke andar ki padding kam ki */
+                border-radius: 15px;
+            }
+
+            .form-container h1 {
+                font-size: 26px; /* Heading size normal kiya */
+                margin-bottom: 20px;
+            }
+
+            form label {
+                font-size: 14px;
+                margin-top: 14px;
+            }
+
+            form input[type="text"],
+            form input[type="email"],
+            form input[type="number"],
+            form textarea {
+                padding: 12px;
+                font-size: 14px;
+            }
+
+            .btn-group {
+                flex-direction: column; /* Buttons ek ke neeche ek aane lagenge */
+                gap: 12px;
+                margin-top: 25px;
+            }
+
+            .save-btn,
+            .back-btn {
+                width: 100%; /* Buttons full width ho jayenge mobile par tab karne ke liye */
+                padding: 12px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="form-container">
+
+    <h1>Add Customer</h1>
+
+    <form th:action="@{/saveCustomer}"
+          th:object="${customer}"
+          method="post">
+          
+        <input type="hidden" th:field="*{id}" />
+
+        <label class="required-label">Name</label>
+        <input type="text"
+               th:field="*{name}"
+               placeholder="Enter customer name"
+               required>
+
+        <label class="required-label">Email</label>
+        <input type="email"
+               th:field="*{mail}"
+               placeholder="Enter email address"
+               required>
+               
+        <label class="required-label">Age</label>
+        <input type="number"
+               th:field="*{age}"
+               placeholder="Enter age"
+               required>       
+               
+        <label class="required-label">Phone Number</label>
+        <input type="text"
+               th:field="*{phon}"
+               placeholder="Enter phone number"
+               required>
+               
+        <label class="required-label">Address</label>
+        <textarea th:field="*{address}"
+                  placeholder="Enter customer address"
+                  required></textarea>
+
+        <label>Designation</label>
+        <input type="text"
+               th:field="*{designation}"
+               placeholder="Enter designation (Optional)">
+
+        <div class="btn-group">
+            <button type="submit" class="save-btn">
+                Save Customer
+            </button>
+            <a th:href="@{/customerlist}" class="back-btn">
+                Back
+            </a>
+        </div>
+
+    </form>
+
+</div>
+
+</body>
+</html>

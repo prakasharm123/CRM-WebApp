@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Customer Management</title>
+
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: 'Poppins', sans-serif;
+		}
+
+		body {
+			background: linear-gradient(to right, #141e30, #243b55);
+			min-height: 100vh;
+			padding: 40px 20px;
+		}
+
+		.container {
+			width: 100%;
+			max-width: 1200px;
+			margin: auto;
+		}
+
+		/* ================= HEADER ================= */
+		.header {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 25px;
+			gap: 15px;
+		}
+
+		.header h1 {
+			color: white;
+			font-size: 34px;
+		}
+
+		.add-btn {
+			text-decoration: none;
+			background: #00c853;
+			color: white;
+			padding: 12px 22px;
+			border-radius: 10px;
+			font-weight: 500;
+			transition: 0.3s;
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+			display: inline-block;
+			white-space: nowrap;
+		}
+
+		.add-btn:hover {
+			background: #00a844;
+			transform: scale(1.05);
+		}
+
+		/* ================= NEW SEARCH SECTION (KEEPT) ================= */
+		.search-box {
+			background: rgba(255, 255, 255, 0.08);
+			backdrop-filter: blur(8px);
+			padding: 25px;
+			border-radius: 18px;
+			margin-bottom: 25px;
+			display: flex;
+			justify-content: space-between;
+			align-items: flex-end;
+			gap: 15px;
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+			flex-wrap: wrap;
+		}
+
+		.search-form {
+			display: flex;
+			align-items: flex-end;
+			gap: 15px;
+			flex: 1;
+			flex-wrap: wrap;
+			min-width: 0;
+		}
+
+		.search-fields {
+			display: flex;
+			gap: 15px;
+			flex: 1;
+			flex-wrap: wrap;
+			min-width: 0;
+		}
+
+		.search-field {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			min-width: 220px;
+		}
+
+		.search-field label {
+			color: white;
+			margin-bottom: 8px;
+			font-size: 14px;
+			font-weight: 500;
+		}
+
+		.search-field input {
+			width: 100%;
+			padding: 13px;
+			border: none;
+			outline: none;
+			border-radius: 10px;
+			background: rgba(255, 255, 255, 0.15);
+			color: white;
+			transition: 0.3s;
+		}
+
+		.search-field input::placeholder {
+			color: #ddd;
+		}
+
+		.search-field input:focus {
+			background: rgba(255, 255, 255, 0.22);
+		}
+
+		.search-btn-box,
+		.reset-btn-box {
+			display: flex;
+			align-items: flex-end;
+			margin-top: 0;
+		}
+
+		.search-btn,
+		.reset-btn {
+			width: 120px;
+			height: 48px;
+			border: none;
+			border-radius: 10px;
+			color: white;
+			cursor: pointer;
+			font-size: 15px;
+			font-weight: 500;
+			font-family: 'Poppins', sans-serif;
+			transition: 0.3s;
+			white-space: nowrap;
+		}
+
+		.search-btn {
+			background: #2979ff;
+		}
+
+		.search-btn:hover {
+			background: #1565c0;
+			transform: scale(1.05);
+		}
+
+		.reset-btn {
+			background: #ff9800;
+		}
+
+		.reset-btn:hover {
+			background: #e68900;
+			transform: scale(1.05);
+		}
+
+		.reset-btn-box form {
+			margin: 0;
+		}
+
+		/* ================= PREVIOUS TABLE DESIGN (REVERTED BACK) ================= */
+		.table-box {
+			background: rgba(255, 255, 255, 0.08);
+			backdrop-filter: blur(8px);
+			border-radius: 18px;
+			overflow-x: auto; /* Horizontal scrolling enabled for mobile screens */
+			box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+			-webkit-overflow-scrolling: touch;
+		}
+
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			min-width: 850px; /* Isse table ke columns shrink hoke gande nahi dikhenge */
+		}
+
+		thead {
+			background: rgba(255, 255, 255, 0.15);
+		}
+
+		thead th {
+			color: white;
+			padding: 18px;
+			font-size: 15px;
+			letter-spacing: 1px;
+			text-align: center;
+		}
+
+		tbody tr {
+			transition: 0.3s;
+		}
+
+		tbody tr:hover {
+			background: rgba(255, 255, 255, 0.1);
+		}
+
+		tbody td {
+			padding: 18px;
+			text-align: center;
+			color: white;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+			font-size: 14px;
+			white-space: nowrap; /* Data break hokar ajeeb nahi dikhega */
+		}
+
+		/* ================= ACTION BUTTONS ================= */
+		.action-buttons {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			gap: 10px;
+		}
+
+		.btn-update {
+			border: none;
+			background: #2979ff;
+			color: white;
+			padding: 8px 14px;
+			border-radius: 8px;
+			font-size: 14px;
+			font-weight: 500;
+			cursor: pointer;
+			transition: 0.3s;
+		}
+
+		.btn-update:hover {
+			background: #1565c0;
+		}
+
+		.delete-btn {
+			border: none;
+			background: #ff1744;
+			color: white;
+			padding: 8px 14px;
+			border-radius: 8px;
+			font-size: 14px;
+			font-weight: 500;
+			cursor: pointer;
+			transition: 0.3s;
+		}
+
+		.delete-btn:hover {
+			background: #d50000;
+		}
+
+		/* ================= EMPTY MESSAGE ================= */
+		.empty-message {
+			text-align: center;
+			color: white;
+			padding: 40px;
+			font-size: 20px;
+		}
+
+		/* ================= POP-UP MODAL STYLES ================= */
+		.modal-backdrop {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.6);
+			backdrop-filter: blur(5px);
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			z-index: 1000;
+			padding: 20px;
+		}
+
+		.modal-box {
+			background: #1e293b;
+			padding: 30px;
+			border-radius: 15px;
+			width: 100%;
+			max-width: 400px;
+			text-align: center;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+			border: 1px solid rgba(255, 255, 255, 0.1);
+		}
+
+		.modal-box h2 {
+			color: #ff1744;
+			margin-bottom: 15px;
+		}
+
+		.modal-box p {
+			color: #cbd5e1;
+			font-size: 15px;
+			margin-bottom: 25px;
+		}
+
+		.modal-buttons {
+			display: flex;
+			justify-content: center;
+			gap: 15px;
+		}
+
+		.cancel-btn, .confirm-btn {
+			flex: 1;
+			padding: 12px 20px;
+			border-radius: 8px;
+			cursor: pointer;
+			font-weight: 500;
+			transition: 0.3s;
+			font-size: 15px;
+		}
+
+		.cancel-btn {
+			background: #64748b;
+			color: white;
+			border: none;
+		}
+
+		.cancel-btn:hover {
+			background: #475569;
+		}
+
+		.confirm-btn {
+			background: #ff1744;
+			color: white;
+			border: none;
+		}
+
+		.confirm-btn:hover {
+			background: #b91c1c;
+		}
+
+		/* ================= MEDIA QUERIES FOR HEADER & SEARCH FILTERS ================= */
+		@media (max-width: 768px) {
+			body {
+				padding: 20px 12px;
+			}
+
+			.header {
+				flex-direction: column;
+				align-items: stretch;
+				text-align: center;
+				margin-bottom: 20px;
+			}
+
+			.header h1 {
+				font-size: 26px;
+			}
+
+			.add-btn {
+				width: 100%;
+				text-align: center;
+				padding: 12px;
+			}
+
+			.search-box {
+				padding: 15px;
+				gap: 10px;
+				flex-direction: column;
+				align-items: stretch;
+			}
+
+			.search-form {
+				flex-direction: column;
+				align-items: stretch;
+			}
+
+			.search-fields {
+				flex-direction: column;
+			}
+
+			.search-field {
+				min-width: 100%;
+			}
+
+			.search-btn-box,
+			.reset-btn-box,
+			.reset-btn-box form {
+				width: 100%;
+			}
+
+			.search-btn,
+			.reset-btn {
+				width: 100%;
+				height: 45px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="container">
+
+		<div class="header">
+			<h1>Customer Management</h1>
+			<a th:href="@{/showform}" class="add-btn"> + Add Customer </a>
+		</div>
+
+		<div class="search-box">
+
+			<form th:action="@{/searchCustomer}" method="get" class="search-form">
+				<div class="search-fields">
+					<div class="search-field">
+						<label>Search By Name</label>
+						<input type="text" name="name" placeholder="Enter Customer Name">
+					</div>
+
+					<div class="search-field">
+						<label>Search By Designation</label>
+						<input type="text" name="designation" placeholder="Enter Designation">
+					</div>
+				</div>
+
+				<div class="search-btn-box">
+					<button type="submit" class="search-btn">Search</button>
+				</div>
+			</form>
+
+			<div class="reset-btn-box">
+				<form th:action="@{/customerlist}" method="get">
+					<button type="submit" class="reset-btn">Reset</button>
+				</form>
+			</div>
+		</div>
+
+		<div class="table-box" th:if="${customers != null and !customers.isEmpty()}">
+			<table>
+				<thead>
+					<tr>
+						<th>S.No.</th>
+						<th>Name</th>
+						<th>Email</th>
+						<th>Phone</th>
+						<th>Address</th>
+						<th>Designation</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="customer, stat : ${customers}">
+						<td th:text="${stat.count}"></td>
+						<td th:text="${customer.name}"></td>
+						<td th:text="${customer.mail}"></td>
+						<td th:text="${customer.phon}"></td>
+						<td th:text="${customer.address}"></td>
+						<td th:text="${customer.designation}"></td>
+						<td>
+							<div class="action-buttons">
+								<form th:action="@{/updateCustomer}" method="GET" style="display: inline;">
+									<input type="hidden" name="id" th:value="${customer.id}" />
+									<button type="submit" class="btn-update">Update</button>
+								</form>
+
+								<button type="button" class="delete-btn"
+									th:onclick="openDeleteModal([[${customer.id}]], [[${customer.name}]])">
+									Delete
+								</button>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div class="empty-message" th:if="${customers == null or customers.isEmpty()}">
+			No Customers Available
+		</div>
+
+	</div>
+
+	<div id="deleteModal" class="modal-backdrop" style="display: none;">
+		<div class="modal-box">
+			<h2>Are you sure?</h2>
+			<p>Do you really want to delete customer <strong id="deleteCustomerName"></strong>? This action cannot be undone.</p>
+
+			<form th:action="@{/deleteCustomer}" method="post">
+				<input type="hidden" id="deleteCustomerId" name="customerId" />
+				<div class="modal-buttons">
+					<button type="button" class="cancel-btn" onclick="closeDeleteModal()">Cancel</button>
+					<button type="submit" class="confirm-btn">Yes, Delete</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script>
+		function openDeleteModal(id, name) {
+			document.getElementById("deleteCustomerName").innerText = name;
+			document.getElementById("deleteCustomerId").value = id;
+			document.getElementById("deleteModal").style.display = "flex";
+		}
+
+		function closeDeleteModal() {
+			document.getElementById("deleteModal").style.display = "none";
+		}
+	</script>
+
+</body>
+</html>
